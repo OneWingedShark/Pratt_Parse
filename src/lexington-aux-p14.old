@@ -1,0 +1,22 @@
+Pragma Ada_2012;
+Pragma Assertion_Policy( Check );
+
+with
+Lexington.Search.Replace_Sequence,
+Ada.Containers.Vectors,
+Ada.Characters.Conversions,
+Ada.Strings.Wide_Wide_Unbounded;
+
+Procedure Lexington.Aux.P14(Data : in out Token_Vector_Pkg.Vector) is
+
+
+--   Type ID_Sequence is Array(Positive range <>) of Token_ID;
+   Procedure Replace is new Search.Replace_Sequence(
+         Sequence    => (li_Integer, ch_Period, li_Integer),
+         Item_Type   => li_Float
+        );
+
+Begin
+   --     Data.Iterate( Make_Literal'Access );
+   Replace(Data);
+End Lexington.Aux.P14;

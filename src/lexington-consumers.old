@@ -1,0 +1,19 @@
+Pragma Ada_2012;
+Pragma Assertion_Policy( Check );
+
+private with
+Lexington.Consumer_Functions;
+
+Package Lexington.Consumers is
+
+   Epsilon : constant Discriminator;
+   Nil     : constant Discriminator;
+
+
+Private
+   Use Lexington.Consumer_Functions;
+
+
+   Epsilon : constant Discriminator:= Epsilon_Function'Access;
+   Nil     : constant Discriminator:= Nil_Function'Access;
+End Lexington.Consumers;

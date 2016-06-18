@@ -1,0 +1,37 @@
+project Pratt_Parse is
+
+   for Source_Dirs use ("src/**");
+   for Object_Dir use "obj";
+   for Exec_Dir use ".";
+   for Main use ("parser.adb");
+
+   package Ide is
+      for Documentation_Dir use "doc";
+   end Ide;
+
+   package Builder is
+      for Default_Switches ("ada") use ("-g", "-s");
+   end Builder;
+
+   package Compiler is
+      for Default_Switches ("ada") use ("-g", "-gnato", "-gnatE", "-fstack-check", "-gnata", "-gnat12", "-O3", "-gnatn", "-ffunction-sections", "-gnatf");
+   end Compiler;
+
+   package Binder is
+      for Default_Switches ("ada") use ("-shared", "-E");
+   end Binder;
+
+   package Linker is
+      for Default_Switches ("ada") use ("-g");
+   end Linker;
+
+   package Prove is
+      for Switches use ("-j4");
+   end Prove;
+
+   package Check is
+      for Default_Switches ("ada") use ("-d");
+   end Check;
+
+end Pratt_Parse;
+
