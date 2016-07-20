@@ -26,6 +26,8 @@ Ada.Tags.Generic_Dispatching_Constructor,
 Parslets.Instances,
 Expressions.Instances;
 
+WITH
+Interfaces;
 
 Procedure Parser is
 --     Type Enumeration_ID is (One, Two, Three);
@@ -44,6 +46,16 @@ Procedure Parser is
 --     Test_2 : Parser_Pkg.Parser:= Parser_Pkg.Create;
 --     Test_3 : Parser_Pkg.Expression'Class:=
 --       Parser_Pkg.Parse( Object => Test_2, Input => Test_1 );
+
+
+
+
+
+--  At the line marked CANDIDATE, I would have liked to write something like
+--
+--  type Discrete_Type_16_or_32_or_64 is (<>)
+--     with Static_Predicate => Discrete_Type_16_or_32_or_64'Size in 16 | 32 | 64;
+--
 
    Function Test return Ada.Wide_Wide_Text_IO.File_Type is
       use Ada.Wide_Wide_Text_IO;
@@ -89,6 +101,7 @@ Begin
 
    TEST_PRATT_PARSER:
    Declare
+      Parse_Count : Positive := 1;
       Parser : Parslets.Parser:= Parslets.Create( Tokens );
       use Parslets, Parslets.Instances, Expressions.Instances, Lexington.Aux;
    Begin
@@ -117,16 +130,19 @@ Begin
 --        Register(Parser, aux.kw_If, Binary_Operator'Tag, Infix => True );
       --Ada.Tags.Generic_Dispatching_Constructor
       null;
-loop
+--loop
       declare
          Root : constant Expressions.Expression'Class := Parslets.Parse( Parser );
          use Ada.Wide_Wide_Text_IO;
+
          ID : Aux.Token := Consume( Parser );
       begin
          null;
+       Put_Line( "Parse-count:" & Positive'Wide_Wide_Image(Parse_Count) );
        Put_Line(  Root.Print  );
+       Parse_Count:= Positive'Succ(Parse_Count);
       end;
-end loop;
+--end loop;
 --     exception
 --        when others =>
 --           Ada.Wide_Wide_Text_IO.Put_Line("Something went wrong.");
