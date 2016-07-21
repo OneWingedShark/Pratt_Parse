@@ -106,25 +106,24 @@ Package Body Parslets is
     Function Parse( Parser     : in out Parslets.Parser;
 		    Precedence : in Natural := 0
 		   ) return PE.Expression'Class is
-	Next    : Aux.Token renames Consume(Parser);
-	Next_ID : Aux.Token_ID renames Aux.Token_Pkg.ID(Next);
+	Next     : Aux.Token renames Consume(Parser);
+	Next_ID  : Aux.Token_ID renames Aux.Token_Pkg.ID(Next);
+
 	use PE;
 
     begin
-	DEBUG( "Parsing Token:" & Aux.Token_Pkg.Print(Next) );
-	--        null;
-	--        raise Program_Error;
-	--        pragma Warnings( OFF );
-	--        Return Result : Temp;
-	--        pragma Warnings( ON );
-	--
+--	DEBUG( "Parsing Token:" & Aux.Token_Pkg.Print(Next) );
 	Ada.Wide_Wide_Text_IO.Put_Line("AAAAA");
+	if not Parser.Prefix_Parslets.Contains( Next_ID ) then
+	    DEBUG( Aux.Token_ID'Wide_Wide_Image(Next_ID) & "" );
+	end if;
+
 	declare
 	    use Expressions.Instances;
-	    Tag             : Ada.Tags.Tag renames Parser.Prefix_Parslets(Next_ID);
-	    Prefix_Parselet : Prefix'Class renames Create(Parser, Tag);
-	    Count : Positive:= Positive'First;  --Parser.Prefix_Parslets(Next_ID);
-	    Left  : Holder := "+"(Prefix_Parselet.Parse(Parser, Next));
+	    Next_Tag : Ada.Tags.Tag renames Parser.Prefix_Parslets(Next_ID);
+	Prefix_Parselet   : Prefix'Class renames Create(Parser, Next_Tag);
+	    Count    : Positive:= Positive'First;  --Parser.Prefix_Parslets(Next_ID);
+	    Left     : Holder := "+"(Prefix_Parselet.Parse(Parser, Next));
 	    --   access Expression'Class := new Expression'Class'(Prefix_Parselet.Parse(Parser, Next));
 	begin
 
@@ -189,19 +188,18 @@ Package Body Parslets is
 	use all type Aux.Token_ID;
 	Item : Token renames Look_Ahead(Parser, 0);
     Begin
---  	Return Result : constant Aux.Token := Consume(Parser) do
-	    if Aux.Token_Pkg.ID(Item) /= Expected then
-		declare
-		    Use Aux, Aux.Token_Pkg;
-		    Res_ID  : Token_ID renames ID(Item);
-		    Exp_Img : String   renames Token_ID'Image(Expected);
-		    Res_Img : String   renames Token_ID'Image(Res_ID);
-		begin
-		    Raise Program_Error with
-		    Exp_Img &" expected, but "& Res_Img &" was found.";
-		end;
-	    end if;
---  	end return;
+	if Aux.Token_Pkg.ID(Item) /= Expected then
+	    declare
+		Use Aux, Aux.Token_Pkg;
+		Res_ID  : Token_ID renames ID(Item);
+		Exp_Img : String   renames Token_ID'Image(Expected);
+		Res_Img : String   renames Token_ID'Image(Res_ID);
+	    begin
+		Raise Program_Error with
+		Exp_Img &" expected, but "& Res_Img &" was found.";
+	    end;
+	end if;
+
 	Return Consume(Parser);
     End Consume;
 
@@ -219,7 +217,7 @@ Package Body Parslets is
 		       ) return Aux.Token is
     Begin
 	Look_Ahead(Parser, Distance);
-	Return Parser.Buffer.Last_Element;
+	Return Parser.Buffer( Parser.Buffer.First_Index + Distance);
     End Look_Ahead;
 
     Function Look_Ahead(Parser   : in out Parslets.Parser;
