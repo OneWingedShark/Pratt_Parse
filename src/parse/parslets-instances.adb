@@ -26,6 +26,10 @@ Package Body Parslets.Instances is
    Package EL renames Expressions.List;
    Function "+"(Item : PE.Expression'Class) return EI.Expression_Holder_Pkg.Holder
       renames EI."+";
+   Function "+"(Item : Wide_Wide_String) return EI.String_Holder_Pkg.Holder
+      renames EI.String_Holder_Pkg.To_Holder;
+
+
 
     ------------------------------
     --  GENERIC INSTANTIATIONS  --
@@ -70,8 +74,6 @@ Package Body Parslets.Instances is
                   Left   : in     PE.Expression'Class;
                   Token  : in     Aux.Token
                  ) return PE.Expression'Class is
-      --Left_ID : Aux.Token_ID renames Aux.Token_Pkg.ID( Left );
-      Right : PE.Expression'Class:= Parse(Parser, ASSIGNMENT-1);
    Begin
       if (Left not in EI.Name_Expression'Class) then
          raise Program_Error with "The left-hand side of an assignment must be a name.";
@@ -82,7 +84,7 @@ Package Body Parslets.Instances is
       begin
          return EI.Assignment_Expression'(
             Name  => +Name_Object,
-            Value => +Right
+            Value => +Parse(Parser, ASSIGNMENT-1) -- Right value.
            );
       end;
    End Parse;
@@ -144,7 +146,7 @@ Package Body Parslets.Instances is
                   Parser : in out Parslets.Parser;
                   Token  : in     Aux.Token
                  ) return PE.Expression'Class is
-    ( EI.Name_Expression'( Name => -Token ) );
+    ( EI.Name_Expression'( Name => +(-Token) ) );
 
    ------------------------
    --  CREATE FUNCTIONS  --

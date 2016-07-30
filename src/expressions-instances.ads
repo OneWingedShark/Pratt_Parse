@@ -1,18 +1,21 @@
 With
 Ada.Containers.Indefinite_Holders,
+Expressions.Holders,
 Expressions.List,
 Lexington.Aux,
 Ada.Containers;
 
-Package Expressions.Instances with Preelaborate is
+-- Expressions.Instances is the package that defines the componenets in the
+-- tree-structure forming the AST. Were I a bit more clever, I could probably
+-- make a generalized node-type, using Ada.Containers.Indefinite_Multiway_Trees,
+-- which would likely be quite well-suited for this project.
+Package Expressions.Instances with Preelaborate, SPARK_Mode => On is
 
     Package String_Holder_Pkg is new Ada.Containers.Indefinite_Holders(
        Element_Type => Wide_Wide_String
       );
 
-    Package Expression_Holder_Pkg is new Ada.Containers.Indefinite_Holders(
-       Element_Type => Expression'Class
-      );
+    Package Expression_Holder_Pkg renames Expressions.Holders;
 
     Subtype Holder is Expression_Holder_Pkg.Holder;
     Function Create( Object : Expression'Class ) return Holder;
@@ -28,7 +31,8 @@ Package Expressions.Instances with Preelaborate is
    --------------------------------------------------------------------------
 
    Type Name_Expression is new Expression with record
-     Name : not null access Wide_Wide_String;
+--       Name : not null access Wide_Wide_String;
+     Name : String_Holder_Pkg.Holder;
    end record;
    Function  Print( Object : Name_Expression;
                     Level  : Ada.Containers.Count_Type := 0
@@ -90,7 +94,8 @@ Private
 --     Function Create( Object : Expression'Class ) return NNEC is
 --       ( New Expression'Class'(Object) );
 
-
+    Function "+"( Object : String_Holder_Pkg.Holder ) return Wide_Wide_String
+		 renames String_Holder_Pkg.Element;
     Function Create( Object : Expression'Class ) return Holder is
       ( Expression_Holder_Pkg.To_Holder( Object ) );
     Function "+"( Object : Holder ) return Wide_Wide_String is

@@ -2,6 +2,7 @@ Pragma Ada_2012;
 Pragma Assertion_Policy( Check );
 
 With
+Expressions.Holders,
 Parser_Precedence;
 
 Use
@@ -95,9 +96,6 @@ Private
 
    Function ID (Input : Aux.Token) return Aux.Token_ID renames Aux.Token_Pkg.ID;
    Function "-"(Input : Aux.Token) return Wide_Wide_String renames Aux.Token_Pkg.Lexeme;
-   Function "-"(Input : Aux.Token) return not null access Wide_Wide_String is
-      ( new Wide_Wide_String'(-Input) );
-
 
    ----------------------
    --  INIT FUNCTIONS  --

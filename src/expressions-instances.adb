@@ -9,12 +9,18 @@ Package Body Expressions.Instances is
    Function Tag( Name : Wide_Wide_String ) return Wide_Wide_String is
      (Name & " -> ");
 
-   Function Print( Object : not null access Wide_Wide_String ) return Wide_Wide_String is
-     ( '[' & Object.All & ']');
+   Function Print( Object : String_Holder_Pkg.Holder ) return Wide_Wide_String is
+      ( '[' & (+Object) & ']');
 
-   Function Print( Object : not null access Wide_Wide_String;
+   Function Print( Object : Holder ) return Wide_Wide_String is
+     ( '[' & (+Object) & ']');
+
+   Function Print( Object : Wide_Wide_String ) return Wide_Wide_String is
+     ( '[' & Object & ']');
+
+   Function Print( Object : Wide_Wide_String;
                    Level  : Ada.Containers.Count_Type ) return Wide_Wide_String is
-     ( (1..Natural(Level) => TAB) & Print(Object) );
+       ( (1..Natural(Level) => TAB) & Print(Object) );
 
    Function Print( Object : Expressions.List.Vector;
                    Level  : Ada.Containers.Count_Type := 0 ) return Wide_Wide_String is
@@ -58,7 +64,7 @@ Package Body Expressions.Instances is
 
    Function  Print( Object : Name_Expression;
                     Level  : Ada.Containers.Count_Type := 0 ) return Wide_Wide_String is
-     (Tag("Name")&	Print(Object.Name, Level)
+     (Tag("Name")&	Print(+Object.Name, Level)
      );
 
    Function  Print( Object : Operator_Expression;
