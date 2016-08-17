@@ -3,13 +3,13 @@ Pragma Assertion_Policy( Check );
 
 Package Parser_Precedence with Pure is
 
-   ASSIGNMENT  : Constant Natural := 1;
-   CONDITIONAL : Constant Natural := 2;
-   SUM         : Constant Natural := 3;
-   PRODUCT     : Constant Natural := 4;
-   EXPONENT    : Constant Natural := 5;
-   PREFIX      : Constant Natural := 6;
-   POSTFIX     : Constant Natural := 7;
-   CALL        : Constant Natural := 8;
+   ASSIGNMENT  : Constant Natural := 10;
+   CONDITIONAL : Constant Natural := 20;
+   SUM         : Constant Natural := 50;
+   PRODUCT     : Constant Natural := 60;
+   EXPONENT    : Constant Natural := 70;
+   PREFIX      : Constant Natural := 96;
+   POSTFIX     : Constant Natural := 97;
+   CALL        : Constant Natural := 98;
 
 End Parser_Precedence;

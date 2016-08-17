@@ -18,11 +18,28 @@ Package Parslets is
 
    type Parser;
 
+    Type Parslet_Style is ( ps_Prefix, ps_Infix_Left, ps_Infix_Right );
+
+   -------------------------------------
+   -- ABSTRACT PARSLET TYPE & METHODS --
+   -------------------------------------
+
+    Type Abstract_Parslet is interface;
+
+    -- Returns the precedence of the given infix operator.
+   Function Precedence(Item   : Abstract_Parslet) return Natural is abstract;
+
+    -- Creates an Infix-operation from the Parser.
+   Function Create( Parser : not null access Parslets.Parser ) return Abstract_Parslet is abstract;
+
+--      -- Returns the concrete instance of a Infix object.
+--     Function Init return Abstract_Parslet is abstract;
+
    --------------------------
    -- INFIX TYPE & METHODS --
    --------------------------
 
-    Type Infix is interface;
+    Type Infix is interface and Abstract_Parslet;
 
     -- Parse takes an Infix-operator, Parser, the left-portion of the expression
     -- and a token; it returns a decendent of Expression.
@@ -32,21 +49,12 @@ Package Parslets is
                   Token  : in     Aux.Token
 		 ) return PE.Expression'Class is abstract;
 
-    -- Returns the precedence of the given infix operator.
-   Function Precedence(Item   : Infix) return Natural is abstract;
-
-    -- Creates an Infix-operation from the Parser.
-   Function Create( Parser : not null access Parslets.Parser ) return Infix is abstract;
-
-    -- Returns the concrete instance of a Infix object.
-   Function Init return Infix is abstract;
-
 
    ---------------------------
    -- PREFIX TYPE & METHODS --
    ---------------------------
 
-    Type Prefix is interface;
+    Type Prefix is interface and Abstract_Parslet;
 
     -- Parse takes an Infix-operator, Parser, the left-portion of the expression
     -- and a token; it returns a decendent of Expression.
@@ -55,14 +63,6 @@ Package Parslets is
                   Token  : in     Aux.Token
                  ) return PE.Expression'Class is abstract;
 
-    -- Returns the precedence of the given prefix operator.
-   Function Precedence(Item   : Prefix) return Natural is abstract;
-
-    -- Creates a Prefix-operation from the Parser.
-   Function Create( Parser : not null access Parslets.Parser ) return Prefix is abstract;
-
-    -- Returns the concrete instance of a Prefix object.
-   Function Init return Prefix is abstract;
 
    --------------------
    -- PARSER METHODS --
@@ -72,7 +72,7 @@ Package Parslets is
    Procedure Register( Parser : in out Parslets.Parser;
                        Token  : in     Aux.Token_ID;
                        Tag    : in     Ada.Tags.Tag;
-                       Infix  : in     Boolean
+                       Style  : in     Parslet_Style
                      );
 
     -- Returns the proper Infix operator from the Parser of the given tag.

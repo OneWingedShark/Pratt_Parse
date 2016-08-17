@@ -98,6 +98,9 @@ Begin
 
 
    Ada.Wide_Wide_Text_IO.Put_Line( "----------------------------------------" );
+--      Subtype Addion_Op   is Add_Sub.Instance;
+--      Subtype Product_Op  is Mul_Div.Instance;
+--      Subtype Exponent_Op is Exponent.Instance;
 
    TEST_PRATT_PARSER:
    Declare
@@ -105,25 +108,25 @@ Begin
       Parser : Parslets.Parser:= Parslets.Create( Tokens );
       use Parslets, Parslets.Instances, Expressions.Instances, Lexington.Aux;
    Begin
-      Register(Parser, aux.op_Add,           Binary_Operator'Tag, Infix => True );
-      Register(Parser, aux.op_Sub,           Binary_Operator'Tag, Infix => True );
-      Register(Parser, aux.op_Mul,           Binary_Operator'Tag, Infix => True );
-      Register(Parser, aux.op_Div,           Binary_Operator'Tag, Infix => True );
-      Register(Parser, aux.op_Concat,        Binary_Operator'Tag, Infix => True );
-      Register(Parser, aux.op_Less_Than,     Binary_Operator'Tag, Infix => True );
-      Register(Parser, aux.op_Greater_Than,  Binary_Operator'Tag, Infix => True );
-      Register(Parser, aux.op_Equal,         Binary_Operator'Tag, Infix => True );
-      Register(Parser, aux.kw_Rem,           Binary_Operator'Tag, Infix => True );
-      Register(Parser, aux.kw_Mod,           Binary_Operator'Tag, Infix => True );
+      Register(Parser, aux.op_Add,           Addion_Op'Tag,  Style => ps_Infix_Left );
+      Register(Parser, aux.op_Sub,           Addion_Op'Tag,  Style => ps_Infix_Left );
+      Register(Parser, aux.op_Mul,           Product_Op'Tag, Style => ps_Infix_Left );
+      Register(Parser, aux.op_Div,           Product_Op'Tag, Style => ps_Infix_Left );
+--        Register(Parser, aux.op_Concat,        Binary_Operator'Tag, Style => True );
+--        Register(Parser, aux.op_Less_Than,     Binary_Operator'Tag, Style => True );
+--        Register(Parser, aux.op_Greater_Than,  Binary_Operator'Tag, Style => True );
+--        Register(Parser, aux.op_Equal,         Binary_Operator'Tag, Style => True );
+--        Register(Parser, aux.kw_Rem,           Binary_Operator'Tag, Style => True );
+--        Register(Parser, aux.kw_Mod,           Binary_Operator'Tag, Style => True );
 
-      Register(Parser, aux.ch_Open_Paren,    Call_Parameters'Tag, Infix => True  );
-      Register(Parser, aux.ch_Open_Paren,    Grouping_Parens'Tag, Infix => False );
+      Register(Parser, aux.ch_Open_Paren,    Call_Parameters'Tag, Style => ps_Infix_Left  );
+      Register(Parser, aux.ch_Open_Paren,    Grouping_Parens'Tag, Style => ps_Prefix );
 
-      Register(Parser, aux.Identifier,       Name'Tag,            Infix => False );
-      Register(Parser, aux.ss_Assign,        Assign'Tag,          Infix => True  );
+      Register(Parser, aux.Identifier,       Name'Tag,            Style => ps_Prefix );
+      Register(Parser, aux.ss_Assign,        Assign'Tag,          Style => ps_Infix_Right  );
 
 
-      Register(Parser, aux.kw_If, Binary_Operator'Tag, Infix => True );
+      --Register(Parser, aux.kw_If, Binary_Operator'Tag, Infix => True );
 
 
 	--Register(Parser, aux.kw_Procedure, Binary_Operator'Tag, Infix => False );

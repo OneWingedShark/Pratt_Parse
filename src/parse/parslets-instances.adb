@@ -2,8 +2,9 @@ Pragma Ada_2012;
 Pragma Assertion_Policy( Check );
 
 with
-Parslets.Generic_Prefix_Create,
-Parslets.Generic_Infix_Create,
+Parslets.Generic_Create,
+--  Parslets.Generic_Prefix_Create,
+--  Parslets.Generic_Infix_Create,
 Expressions.List,
 Expressions.Instances;
 
@@ -35,12 +36,12 @@ Package Body Parslets.Instances is
     --  GENERIC INSTANTIATIONS  --
     ------------------------------
 
-    Function Create_Instance is new Generic_Prefix_Create(Compilation_Unit);
-    Function Create_Instance is new Generic_Infix_Create(Assign);
-    Function Create_Instance is new Generic_Infix_Create(Binary_Operator);
-    Function Create_Instance is new Generic_Infix_Create(Call_Parameters);
-    Function Create_Instance is new Generic_Prefix_Create(Grouping_Parens);
-    Function Create_Instance is new Generic_Prefix_Create( Name );
+    Function Create_Instance is new Generic_Create(Compilation_Unit);
+    Function Create_Instance is new Generic_Create(Assign);
+--      Function Create_Instance is new Generic_Infix_Create(Binary_Operator);
+    Function Create_Instance is new Generic_Create(Call_Parameters);
+    Function Create_Instance is new Generic_Create(Grouping_Parens);
+    Function Create_Instance is new Generic_Create( Name );
 
 
     ------------------------
@@ -49,10 +50,21 @@ Package Body Parslets.Instances is
 
     Function Create( Parser : not null access Parslets.Parser ) return Compilation_Unit renames Create_Instance;
     Function Create( Parser : not null access Parslets.Parser ) return Assign           renames Create_Instance;
-    Function Create( Parser : not null access Parslets.Parser ) return Binary_Operator  renames Create_Instance;
+--      Function Create( Parser : not null access Parslets.Parser ) return Binary_Operator  renames Create_Instance;
     Function Create( Parser : not null access Parslets.Parser ) return Call_Parameters  renames Create_Instance;
     Function Create( Parser : not null access Parslets.Parser ) return Grouping_Parens  renames Create_Instance;
     Function Create( Parser : not null access Parslets.Parser ) return Name             renames Create_Instance;
+
+--      Function Create( Parser : not null access Parslets.Parser ) return Binary_Operator is
+--      begin
+--  	Return (
+--            Precedence_Value => 1--(case  is
+--
+--                                ,--),
+--            Is_Right         => True
+--  	);
+--      end Create;
+
 
 
     -----------------------
@@ -87,21 +99,6 @@ Package Body Parslets.Instances is
             Value => +Parse(Parser, ASSIGNMENT-1) -- Right value.
            );
       end;
-   End Parse;
-
-   Function Parse(Item   : in     Binary_Operator;
-                  Parser : in out Parslets.Parser;
-                  Left   : in     PE.Expression'Class;
-                  Token  : in     Aux.Token
-                 ) return PE.Expression'Class is
-      Offset : constant Integer := (if Item.Is_Right then -1 else 0);
-      Right  : pe.Expression'Class := Parse(Parser, Item.Precedence - Offset);
-   Begin
-      Return EI.Operator_Expression'(
-         Left     => +Left,
-         Right    => +Right,
-         Operator => ID(Token)
-        );
    End Parse;
 
    Function Parse(Item   : in     Call_Parameters;
@@ -151,6 +148,11 @@ Package Body Parslets.Instances is
    ------------------------
    --  CREATE FUNCTIONS  --
    ------------------------
+
+--      Function Init return Binary_Operator is
+--      begin
+--  	return (200,True);
+--      end Init;
 
 
 End Parslets.Instances;

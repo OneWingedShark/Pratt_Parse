@@ -56,7 +56,7 @@ Package Body Parslets is
     Procedure Register( Parser : in out Parslets.Parser;
 			Token  : in     Aux.Token_ID;
 			Tag    : in     Ada.Tags.Tag;
-			Infix  : in     Boolean
+			Style  : in     Parslet_Style
 		       ) is
 
 
@@ -85,6 +85,7 @@ Package Body Parslets is
 	    when others => Null;
 	End Check_Tag;
 
+	Infix : constant Boolean := Style in ps_Infix_Left|ps_Infix_Right;
     Begin
 	if Infix then
 	    Check_Tag( Parslets.Infix'Tag );
@@ -128,7 +129,7 @@ Package Body Parslets is
 	begin
 
 	    Ada.Wide_Wide_Text_IO.Put_Line("BBBBB");
-	    Ada.Wide_Wide_Text_IO.Put_Line("Prec:" & Integer'Wide_Wide_Image(Parslets.Precedence(Parser)));
+	    Ada.Wide_Wide_Text_IO.Put_Line("Precdence:" & Integer'Wide_Wide_Image(Parslets.Precedence(Parser)));
 	    while (Precedence < Parslets.Precedence(Parser)) loop
 		DEBUG( Positive'Wide_Wide_Image( Count ) );
 		Count:= Count + 1;
